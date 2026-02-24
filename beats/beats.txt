@@ -1,0 +1,36 @@
+//Acid
+setcpm(140/4)
+
+$: sound("sbd*4").distort("3:.3").speed("<0.8 0.4>")._scope()
+
+$bass: note(irand(9).sub(5).seg(16))
+  .sound("sawtooth")
+  .scale("c:minor")
+  //.rib(46,1)
+  .distort("2.2:.2")
+  .lpf(300)
+  .lpenv(slider(2.328,0,8))
+  .orbit(2)
+  ._punchcard()
+
+$: s("supersaw")
+  .detune(1)
+  .slow(2)
+  .release(5)
+  .beat(2,32)
+  .fm("2")
+  .fmh(2.04)
+  .gain(slider(0.198))
+  .room(1)
+  .roomsize(6)
+  .orbit(3)
+
+$: s("pulse")
+  .orbit(4)
+  .seg(16)
+  .dec(.1)
+  .fm(time)
+  .fmh(time)
+  .gain(slider(0.22))
+  ._punchcard()
+
