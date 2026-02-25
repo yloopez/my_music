@@ -1,0 +1,49 @@
+//soft house (I dont love it)
+
+setcpm(120/4)
+
+$kick: s("bd*4")
+  .bank("RolandTR909")
+  .speed(0.5)
+  ._scope()
+$hats: s("hh*2 hh hh*2 hh")
+  .bank("RolandTR909")
+  .swingBy(1/6 ,4)
+  .gain(slider(0.743))
+
+_$openh: s("- oh - oh")
+  .gain(slider(0.13))
+  .bank("RolandTR909")
+
+$snare: s("< - <sd cp>>*4")
+  .bank("RolandTR909")
+  .room(0.3)
+  .gain(slider(0.652))
+
+$bass: n("0 [0 3] 4 2*2")
+  .scale("c:dorian")
+  .s("sine")
+  .oct(-1)
+  .swingBy(1/6, 2)
+  .orbit(2)
+
+$pad: n("<[0,2,4] [3,5,7] [4,6,8] [2,4,6]>")
+  .scale("c:dorian")
+  .s("gm_epiano1")
+  .slow(2)
+  .room(.5)
+  .gain(slider(0.425))
+
+$melody: n("<1*2 <3 6 9> [2 3]*2 [1 5]>*4")
+  .scale("c:dorian")
+  .s("gm_music_box")
+  .room(0.4)
+  .oct(1)
+  .attack(0.05)
+  .release(0.3)
+  .delay(slider(0.541))
+  .gain(slider(0.289))
+  .orbit(4)
+
+
+
