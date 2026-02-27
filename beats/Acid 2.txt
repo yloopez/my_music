@@ -1,77 +1,101 @@
-//Acid 2
 setcpm(150/4)
 
-const bass_pattern = "e2 f2 ~ g#1 ~ a1 f2 ~"
 
-const bass = 
-  note(bass_pattern)
-  //note("e1 (5,8)")
-  .sound("supersaw")
-  .sustain(slider(0.3))
-  .release(slider(0.182))
+const pad = n("0,4")
+  .scale("c:phrygian")
+  .s("supersaw")
+  .detune(.6)
+  .lpf(perlin.range(200, 800).slow(8))
+  .fm(2)
+  .fmh(1.5)
   .shape(.3)
+  .room(.9)
+  .roomsize(8)
+  .attack(2)
+  .sustain(1)
+  .release(3)
+  .gain(slider(0.147))
+  ._scope()
+const bass_notes_pattern_one = "c2 ~ c2 b1 ~ bb1 ~ c2"
+const bass_notes_pattern_two = "c2 c2 ~ b1 ~ bb1 c2 ~"
+
+const main_kick_pattern = "<[sbd!3 sbd*2] [sbd!2 sbd*2 sbd]>"
+
+
+
+const bass = note(bass_notes_pattern_two)
+  //.struct("t(9,16)")
+  .sound("sawtooth")
+  .release(.2)
+  .sustain(.3)
   .lpf(perlin.range(200, 1000).slow(4))
-  .lpq(slider(8.35,1,50))
-  .lpenv(slider(2.085,1,8))
-  .room(.1)
+  .lpq(slider(3.134,1,12))
+  .lpenv(slider(8.238,1,12))
+  .room(.15)
+  .shape(.3)
   .jux(rev)
   .postgain(slider(1))
   ._scope()
+
 const sub_kick = s("bd:3!4")
   .bank("tr808")
-  .shape(.7)
-  .sustain(.8)
-  .hpf(80)
+  .shape(.65)
+  .sustain(slider(1))
+  .hpf(100)
   .postgain(slider(1))
   ._scope()
-const main_kick = s("<[sbd!3 sbd*2] [sbd!2 sbd*2 sbd]>")._scope()
-const hats = s("white!8")
-  .decay(.07)
-  .lpf(2000)
-  .delay(.2)
+
+const main_kick = s("<[sbd sbd sbd sbd*2] [sbd sbd sbd*2 sbd]>")
+  .lpf(perlin.range(200, 2000).slow(2))
+  .shape(.3)
+  ._scope()
+const hats = s("white!16")
+  .decay(.1)
+  .lpf(slider(1837,1000,10000))
+  .delay(.1)
   .sometimesBy(".4", x=>x.s("oh | hh"))
   .velocity(perlin.range(.4,1.7))
   ._scope()
-const low_tom = s("~ ~ lt ~ lt ~ ~ ~").lpf(1000).pan(.6).postgain(1)
-
-const mid_tom = s("~ ~ ~ mt ~ ~ mt [~ mt]").lpf(2500).pan(.3).postgain(1)
-
-const high_tom = s("ht ht ~ ~ ht ~ [ht ht] ~").lpf(300).pan(.8).postgain(.8)
+const low_tom = s("~ ~ lt ~ lt ~ ~ ~").lpf(1000).pan(.6)._scope()
+const mid_tom = s("~ ~ ~ mt ~ ~ mt [~ mt]").lpf(2500).pan(.3)._scope()
+const high_tom = s("ht ht ~ ~ ht ~ [ht ht] ~").lpf(300).pan(.8)._scope()
 
 let toms = stack(
   low_tom,
   mid_tom,
   high_tom
-).delay(.2)
+).delay(.2).postgain(slider(1)).bank("RolandTR909")
 
-let boogie = s("hh:1 * 8, oh:4*4")
+const boogie = s("hh:1*8, oh:4*4")
   .decay(.05)
   .delay(.2)
-  .speed(perlin.range(1, 2).slow(8))
-  .velocity(perlin.range(.5, 1.5))
-  .postgain(1).lpf(slider(6550,0,10000))
+  .bank("RolandTR909")
+  .speed(perlin.range(.5, 1.5))
+  .postgain(slider(0.541))
+  ._scope()
 
-let arpegio = note(irand(25).sub(5).seg(8))
-  .scale("c:minor")
+const arpegio = note(irand(25).sub(5).seg(16))
+  .scale("c:phrygian")
   .s("sawtooth")
-  .rib(50,2)
-  .lpf(slider(672,0,8000))
-  .lpenv(slider(2.4,1,8))
-  .lpq(slider(9.477,1,50))
-  .room(.6)
+  .lpf(slider(611.6,200,10000))
+  .lpenv(slider(1.539,1,12))
+  .lpq(slider(14.23,1,50))
+  .room(.3)
+  .rib(15,2)
+  //.jux(rev)
+  .roomsize(4)
   .shape(.15)
-  .roomsize(6)
-  .delay(.1)
-  .sustain(.7)
-  .postgain(1)
+  .sustain(.4)
+  .postgain(slider(0.719))
   ._punchcard()
 
 track: stack(
   bass,
+  pad,
   sub_kick,
   main_kick,
   hats,
-  boogie,
   toms,
+  boogie,
   arpegio
-).hpf(slider(0,0,3000))
+).hpf(slider(0,0,10000))
