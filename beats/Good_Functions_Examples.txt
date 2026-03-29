@@ -1,0 +1,32 @@
+samples({
+  techno: 'https://raw.githubusercontent.com/yloopez/my_music/master/samples/Techno.wav'
+})
+
+_$: s("techno").slow(1).gain(.8).lpf(1000).lpq(24).speed(1).room(.8)
+
+_$: chord("<Fm11!2 Cm11!2>").att(.5).voicing().vib("4:.2").room(.8)
+
+_$: n("0 ~ ~ <4 7> ~ ~ -1*2 ~").scale("F1:dorian").s("supersaw").lpf(200).lpd(.1).lpe(2).lpq(8).dist(1.6).room(.2)
+
+_$: s("bd ~ bd ~ bd ~ bd bd:0:.6").bank("RolandTR909").dist(.8)
+  .lastOf(4, x=>x.ply("4").dec(.1).speed(saw.range(.5,2)))
+
+_$: s("[~ sd:<0 1>]*2").bank("RolandTR909").room(.2)
+
+_$: n("0 .. 15").s("hh").bank("RolandTR909").room(.2)
+
+_$: n("0 .. 7").s("gm_celesta").dec(.3).rarely(ply("2")).speed(rand.range(1,1.5))
+
+_$: note("[~ g1]*4").s("supersaw").lpf(200).lpq(8).lpe(2).dec(.2).dist(1.5)
+
+_$: s("bd*<4!7 [4 8]>")
+  .bank("RolandTR909")
+  .off(-1/16, x=>x.speed(2).gain("<.1!5 .75>*4"))
+  .shape(.3)
+  .hpf(1000)
+
+_$: s("[~ white]*4").room(.1).lpf(saw.slow(8).range(8000,200))
+
+
+_$: s("hh*16").gain(saw.fast(4).add(saw.fast(2).div(2))).bank("RolandTR909").room(.1).mul(gain(1.2)).speed(.9)
+  .rarely(mul(speed(".8")))
