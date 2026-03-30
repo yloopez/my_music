@@ -1,0 +1,86 @@
+samples({
+  techno: 'https://raw.githubusercontent.com/yloopez/my_music/master/samples/Techno.wav'
+})
+
+$: s("techno/2")
+  .gain(.2)
+  .lpf(1000)
+  .lpq(25)
+  .speed(1)
+  .room(.4)
+  .vib("4:.7")
+
+
+$: s("sbd*<4!7 [4 8]>")
+  .shape(.2)
+  .off(-1/16, x=>x.speed(2).gain("<.1!5 .75>*8"))
+
+_$: s("sbd sbd sbd*2 sbd sbd sbd*2 sbd ~")
+  .gain(.4)
+
+const bass_one = ("~ 0 ~ ~ ~ 1 ~ ~")
+const bass_two = ("~ 2 2 ~ ~ 0*2 ~ 1")
+$: note(bass_one)
+  .scale("c2:dorian")
+  .sound("sawtooth")
+  .lpf(650)
+  .lpenv(28)
+  .lpd(.15)
+  .lpq("<4 8 12 16>")
+  //.room(.2)
+  .shape(.4)
+  .lastOf(4, x=>x.ply("2").dec(.1).add(note("[3 5 4 6]")))
+
+$: note("0 2*2 4 5*2").scale("c:dorian").s("bongo").shape(.6)
+
+const w_noise_one = "[~ white]*4"
+const w_noise_two = "[~ white]*8"
+_$: s(w_noise_one)
+  //.dec(.1)
+  .room(.2)
+  .attack(.3)
+  .lpf(saw.range(2000, 300).slow(4))
+
+_$: s(" ~ ht ~ ht ~ ~ ht*2 ~, mt ~ mt ~ ~ ~ [~ mt] ~, lt ~ lt ~ lt*2 ~ lt ~")
+  .bank("RolandTR909")
+  .room(.2)
+  .shape(.4)
+  .off(1/16, x=>x.speed(4).gain("<.1!5 .50>*8"))
+  .lpf(saw.range(2000,100).slow(4))
+
+_$: s("rim*<2!7 [4 8]>")
+  .bank("RolandTR909")
+  .shape(.2)
+  .sometimesBy(.4, x=>x.s("hh | oh"))
+
+_$: s("hh*8")
+  .bank("RolandTR909")
+  .room(.3)
+  .gain("<.5!4 .8>")
+  .sometimesBy(.2, x=>x.s("oh").shape(.1))
+
+
+$: chord("<Gm9 Cm9 Bbm9>/2")
+  .dict('ireal')
+  .voicing()
+  .sustain(.4)
+  .vib("6:.4")
+  //.sound("sawtooth")
+  .sound("piano")
+  .room(.7)
+  .shape(.4)
+
+_$: note(irand(25).sub(5).seg(4))
+  .scale("c:dorian")
+  .sound("sawtooth")
+  .lpf(1000)
+  .lpenv(25)
+  .lpq(25)
+  //.shape(.1)
+  .sustain(.2)
+  .room(.2)
+  .gain(.3)
+
+
+
+all(x=>x.hpf(slider(0,0,8000)))
