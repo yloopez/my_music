@@ -1,86 +1,97 @@
-samples({
-  techno: 'https://raw.githubusercontent.com/yloopez/my_music/master/samples/Techno.wav'
-})
+const allCC = await midin('MPK mini 3')
+const cc = (ccNum) => allCC(ccNum, 1)
+const kb = await midikeys('MPK mini 3')
 
-$: s("techno/2")
-  .gain(.2)
-  .lpf(1000)
-  .lpq(25)
-  .speed(1)
+_$: kb().s("supersaw").shape(.5)
+
+const lpfilter_one = cc(16).range(100,2000)
+const lpfilter_two = cc(17).range(100,2000)
+const hpfilter = cc(20).range(0,1000)
+
+all(x=>x.hpf(hpfilter))
+
+const kick_one = "bd bd bd bd"
+const kick_two = "[bd bd bd bd]*<1!6 2 [2 3]>"
+
+_$kick: sound(kick_two)
+  .bank("RolandTR909")
+  .n("<1 2 2>")
+  .distort("<0.8:.5!6 1:.4 1.5:.3>")
+  .gain(.5)
+  .off(-1/16, x=>x.speed(2).gain(.2))
+
+
+const l_tom = s("~ lt:2 ~ lt:2 ~ ~ [lt:2 ~] lt:2")
+const m_tom = s("mt:2 ~ [~ mt:2] ~ mt:2*2  ~ ~ ~")
+const h_tom = s("~ ht:2*2 ~ ~ ~ [~ ht:2] ~ ht:2")
+
+$toms: stack(
+  //l_tom,
+  //m_tom,
+  //h_tom
+).bank("RolandTR909")
+  .gain(.6)
+  .lpf(sine.range(200, 1000).slow(4))
+
+const chords_one = "<Cm9 Am9>"
+const chords_two = "<Cm9 Am9 Fm9 G7>"
+_$sustain: chord(chords_two.slow(2))
+  .dict('ireal')
+  .sound("sine")
+  .voicing()
+  .lpf(320)
+  .attack(0.2)
+  .decay(3)
+  .sustain(0)
+  .release(1)
   .room(.4)
-  .vib("4:.7")
+  .gain(.25)
+  .vib("2:.3")
+  .postgain(slider(0.045))
 
-
-$: s("sbd*<4!7 [4 8]>")
-  .shape(.2)
-  .off(-1/16, x=>x.speed(2).gain("<.1!5 .75>*8"))
-
-_$: s("sbd sbd sbd*2 sbd sbd sbd*2 sbd ~")
+_$: note("<[<[4 7] [2 5] [0 3]> ~ ~ ~] [~ ~ ~ ~]>")
+  .scale("c3:dorian")
+  .sound("supersaw")
+  .decay(.09)
+  .vib("4:.3")
+  .lpf(lpfilter_one)
+  .lpq(10)
+  .lpenv(3)
+  .room(.3)
+  .distort(".7")
   .gain(.4)
 
-const bass_one = ("~ 0 ~ ~ ~ 1 ~ ~")
-const bass_two = ("~ 2 2 ~ ~ 0*2 ~ 1")
-$: note(bass_one)
-  .scale("c2:dorian")
-  .sound("sawtooth")
-  .lpf(650)
-  .lpenv(28)
-  .lpd(.15)
-  .lpq("<4 8 12 16>")
-  //.room(.2)
-  .shape(.4)
-  .lastOf(4, x=>x.ply("2").dec(.1).add(note("[3 5 4 6]")))
-
-$: note("0 2*2 4 5*2").scale("c:dorian").s("bongo").shape(.6)
-
-const w_noise_one = "[~ white]*4"
-const w_noise_two = "[~ white]*8"
-_$: s(w_noise_one)
-  //.dec(.1)
-  .room(.2)
-  .attack(.3)
-  .lpf(saw.range(2000, 300).slow(4))
-
-_$: s(" ~ ht ~ ht ~ ~ ht*2 ~, mt ~ mt ~ ~ ~ [~ mt] ~, lt ~ lt ~ lt*2 ~ lt ~")
-  .bank("RolandTR909")
-  .room(.2)
-  .shape(.4)
-  .off(1/16, x=>x.speed(4).gain("<.1!5 .50>*8"))
-  .lpf(saw.range(2000,100).slow(4))
-
-_$: s("rim*<2!7 [4 8]>")
-  .bank("RolandTR909")
-  .shape(.2)
-  .sometimesBy(.4, x=>x.s("hh | oh"))
-
-_$: s("hh*8")
-  .bank("RolandTR909")
-  .room(.3)
-  .gain("<.5!4 .8>")
-  .sometimesBy(.2, x=>x.s("oh").shape(.1))
-
-
-$: chord("<Gm9 Cm9 Bbm9>/2")
-  .dict('ireal')
-  .voicing()
-  .sustain(.4)
-  .vib("6:.4")
-  //.sound("sawtooth")
-  .sound("piano")
-  .room(.7)
-  .shape(.4)
-
-_$: note(irand(25).sub(5).seg(4))
+_$: n(irand(6).seg(16))
   .scale("c:dorian")
-  .sound("sawtooth")
-  .lpf(1000)
-  .lpenv(25)
-  .lpq(25)
-  //.shape(.1)
-  .sustain(.2)
-  .room(.2)
+  .s("sawtooth")
+  .lpf(lpfilter_two)
+  .lpenv(4)
+  .rib(46,1)
   .gain(.3)
+  .mask("<1 0 0 0>*2")
 
+_$hats: s("hh!8")
+  .bank("RolandTR909")
+  .room(.1)
+  .sometimesBy(.2, x=>x.sound("oh | cp"))
+  .postgain(slider(0.158))
 
+_$notes: note("<[2 4]*2 [4 6]*2 [6 8]*2 [8 10]*2 [[~ 8] [7 ~] [1 2] 3]>*2")
+  .scale("c3:dorian")
+  .sound("supersaw")
+  //.lpf(sine.range(200, 1000).slow(4))
+  .lpf(lpfilter_one)
+  .lpenv(4)
+  .lpq(10)
+  .room(.2)
+  .postgain(slider(0.067))
+  ._pianoroll()
 
-all(x=>x.hpf(slider(0,0,8000)))
+_$bass: note("~ 2 ~ 1 ~ 0 1 ~")
+  .scale("c2:dorian")
+  .sound("square")
+  .lpf(350)
+  .lpenv(5)
+  .lpq(8)
+  .room(.4)
+  .gain(.5)

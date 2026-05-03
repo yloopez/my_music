@@ -1,0 +1,38 @@
+const allCC = await midin('MPK mini 3')
+const cc = (ccNum) => allCC(ccNum, 1)
+const kb = await midikeys('MPK mini 3')
+
+_$: kb().s("supersaw").shape(.5)
+
+const lpfilter_one = cc(16).range(100,2000)
+const lpfilter_two = cc(17).range(100,2000)
+const hpfilter = cc(20).range(0,1000)
+
+all(x=>x.hpf(hpfilter))
+
+
+$weird_bass: arrange(
+  [6, "<e2 e1>".note().euclid(3,8)],
+  [6, "<g2 g1>".note().euclid(3,8)],
+  [6, "<bb2 bb1>".note().euclid(3,8)],
+  [6, "<c2 c1>".note().euclid(3,8)],
+).add(perlin.range(0,.15))
+  .gain(slider(1))
+  .add(perlin.range(0,.55))
+  .room(.5)
+
+_$tamb: s("tambourine2*8").room(.2).gain(perlin.range(.2, .5))
+
+$: stack("Am7 Em7 Gm7 Bb7".voicings('lefthand')
+         .superimpose(x=>x.add(.15))
+         .add(perlin.range(0,.05))
+         .note()
+         .s('supersaw')
+         .gain(.05)
+         .velocity("<0.9 0.95 1>")
+         .attack(0.9)
+         .delay(0.5)
+         .room(0.6)
+         .lpf(slider(1095.6, 300, 2000))
+        ).slow(6).color("blue")
+
